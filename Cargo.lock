@@ -96,6 +96,7 @@ dependencies = [
  "grid",
  "itertools 0.12.1",
  "rayon",
+ "regex",
  "yaah",
 ]
 

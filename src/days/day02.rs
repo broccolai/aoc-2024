@@ -46,8 +46,7 @@ fn parse_line(line: &str) -> Vec<u32> {
 }
 
 fn skipping_index_of_vec(vec: &Vec<u32>, index: usize) -> Vec<u32> {
-    vec
-        .iter()
+    vec.iter()
         .enumerate()
         .filter(|&(idx, _)| idx != index)
         .map(|(_, &num)| num)
