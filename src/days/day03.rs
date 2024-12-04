@@ -7,7 +7,7 @@ fn part_one(data: &'static str) -> u32 {
 
     regex
         .captures_iter(data)
-        .map(parse_instruction)
+        .map(|capture| parse_instruction(&capture))
         .map(|(a, b)| a * b)
         .sum()
 }
@@ -19,12 +19,11 @@ fn test_part_one() -> u32 {
 
 #[aoc(day3, part2)]
 fn part_two(data: &'static str) -> u32 {
-    let regex_mul = Regex::new(r"mul\(\d+,\d+\)").unwrap(); // Match valid mul instructions
-    let regex_control = Regex::new(r"(do\(\)|don't\(\))").unwrap(); // Match control instructions
-
-    let mut enabled = true; // Start with mul instructions enabled
+    let regex_mul = Regex::new(r"mul\(\d+,\d+\)").unwrap();
+    let regex_control = Regex::new(r"(do\(\)|don't\(\))").unwrap();
+    
+    let mut enabled = true;   
     let mut total = 0;
-
     let mut pointer = 0;
 
     for i in 1..data.len() {
@@ -48,7 +47,7 @@ fn part_two(data: &'static str) -> u32 {
             }
         }
 
-        let (a, b) = parse_instruction(capture.unwrap());
+        let (a, b) = parse_instruction(&capture.unwrap());
 
         if enabled {
             total += a * b;
@@ -65,7 +64,7 @@ fn test_part_two() -> u32 {
     48
 }
 
-fn parse_instruction(capture: Captures<'_>) -> (u32, u32) {
+fn parse_instruction(capture: &Captures<'_>) -> (u32, u32) {
     let (a, b) = capture
         .get(0)
         .unwrap()
