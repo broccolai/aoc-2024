@@ -1,3 +1,5 @@
+use std::ops::Mul;
+
 use grid::Grid;
 
 #[derive(Debug, Copy, Clone)]
@@ -29,8 +31,62 @@ impl Position {
     }
 }
 
+impl Mul<usize> for Position {
+    type Output = Self;
+
+    fn mul(self, scalar: usize) -> Self {
+        Self {
+            row: self.row * scalar as i32,
+            column: self.column * scalar as i32,
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub enum Direction {
+    UpLeft,
+    Up,
+    UpRight,
+    Left,
+    Right,
+    DownLeft,
+    Down,
+    DownRight,
+}
+
+pub const DIRECTIONS: [Direction; 8] = [
+    Direction::UpLeft,
+    Direction::Up,
+    Direction::UpRight,
+    Direction::Left,
+    Direction::Right,
+    Direction::DownLeft,
+    Direction::Down,
+    Direction::DownRight,
+];
+
+impl Direction {
+    pub const fn to_position(self) -> Position {
+        match self {
+            Self::UpLeft => Position {
+                row: -1,
+                column: -1,
+            },
+            Self::Up => Position { row: -1, column: 0 },
+            Self::UpRight => Position { row: -1, column: 1 },
+            Self::Left => Position { row: 0, column: -1 },
+            Self::Right => Position { row: 0, column: 1 },
+            Self::DownLeft => Position { row: 1, column: -1 },
+            Self::Down => Position { row: 1, column: 0 },
+            Self::DownRight => Position { row: 1, column: 1 },
+        }
+    }
+}
+
 pub trait PositonGrid<T> {
     fn get_with_position(&self, positon: Position) -> Option<&T>;
+
+    fn get_with_direction(&self, position: Position, direction: Direction) -> Option<&T>;
 }
 
 impl<T> PositonGrid<T> for Grid<T> {
@@ -40,6 +96,12 @@ impl<T> PositonGrid<T> for Grid<T> {
         }
 
         self.get(positon.row as usize, positon.column as usize)
+    }
+
+    fn get_with_direction(&self, position: Position, direction: Direction) -> Option<&T> {
+        let adjusted_position = position.add(direction.to_position())?;
+
+        self.get_with_position(adjusted_position)
     }
 }
 
