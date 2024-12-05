@@ -21,8 +21,8 @@ fn test_part_one() -> u32 {
 fn part_two(data: &'static str) -> u32 {
     let regex_mul = Regex::new(r"mul\(\d+,\d+\)").unwrap();
     let regex_control = Regex::new(r"(do\(\)|don't\(\))").unwrap();
-    
-    let mut enabled = true;   
+
+    let mut enabled = true;
     let mut total = 0;
     let mut pointer = 0;
 

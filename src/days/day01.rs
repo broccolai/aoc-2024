@@ -51,4 +51,3 @@ fn part_two(lists: &Lists) -> usize {
 fn test_part_two() -> usize {
     31
 }
-

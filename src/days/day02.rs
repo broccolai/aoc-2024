@@ -8,10 +8,11 @@ const VALID_RANGE: RangeInclusive<u32> = 1..=3;
 #[aoc_generator(day2)]
 fn generator(data: &'static str) -> Vec<Vec<u32>> {
     data.lines()
-        .map(|line| line.split_whitespace()
-        .map(|num| num.parse::<u32>().unwrap())
-        .collect()
-        )
+        .map(|line| {
+            line.split_whitespace()
+                .map(|num| num.parse::<u32>().unwrap())
+                .collect()
+        })
         .collect_vec()
 }
 
