@@ -33,7 +33,7 @@ fn part_two(manual: &Manual) -> u32 {
         .iter()
         .filter(|page| !is_ordered(prerequisites, page))
         .map(|page| {
-            let reorded_page = reorder_page(prerequisites, page.clone());
+            let reorded_page = reorder_page(prerequisites, page);
             middle_entry(&reorded_page)
         })
         .sum()
@@ -85,8 +85,8 @@ fn is_ordered(prerequisites: &HashMap<u32, HashSet<u32>>, page: &[u32]) -> bool 
     })
 }
 
-fn reorder_page(prerequisites: &HashMap<u32, HashSet<u32>>, page: Vec<u32>) -> Vec<u32> {
-    let mut reorder_page = page.clone();
+fn reorder_page(prerequisites: &HashMap<u32, HashSet<u32>>, page: &[u32]) -> Vec<u32> {
+    let mut reorder_page = page.to_owned();
     reorder_page.sort_by(|a, b| {
         // If 'a' must come before 'b', 'a' should be less than 'b'
         // We use `cmp` with boolean to prioritize correctly ordered pairs.
@@ -98,6 +98,6 @@ fn reorder_page(prerequisites: &HashMap<u32, HashSet<u32>>, page: Vec<u32>) -> V
     reorder_page
 }
 
-fn middle_entry(page: &[u32]) -> u32 {
+const fn middle_entry(page: &[u32]) -> u32 {
     page[page.len() / 2]
 }

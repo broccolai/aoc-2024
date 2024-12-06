@@ -2,7 +2,7 @@ use std::ops::Mul;
 
 use grid::Grid;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Eq, PartialEq, Debug, Copy, Clone, Hash)]
 pub struct Position {
     pub row: i32,
     pub column: i32,
@@ -42,7 +42,7 @@ impl Mul<usize> for Position {
     }
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Eq, PartialEq, Debug, Copy, Clone, Hash)]
 pub enum Direction {
     UpLeft,
     Up,
@@ -86,7 +86,15 @@ impl Direction {
 pub trait PositonGrid<T> {
     fn get_with_position(&self, positon: Position) -> Option<&T>;
 
+    fn set_with_position(&mut self, position: Position, value: T);
+
     fn get_with_direction(&self, position: Position, direction: Direction) -> Option<&T>;
+
+    fn get_with_direction_indexed(
+        &self,
+        position: Position,
+        direction: Direction,
+    ) -> Option<(Position, &T)>;
 }
 
 impl<T> PositonGrid<T> for Grid<T> {
@@ -98,10 +106,24 @@ impl<T> PositonGrid<T> for Grid<T> {
         self.get(positon.row as usize, positon.column as usize)
     }
 
+    fn set_with_position(&mut self, position: Position, value: T) {
+        self.set(position.row as usize, position.column as usize, value);
+    }
+
     fn get_with_direction(&self, position: Position, direction: Direction) -> Option<&T> {
+        self.get_with_direction_indexed(position, direction)
+            .map(|(_, value)| value)
+    }
+
+    fn get_with_direction_indexed(
+        &self,
+        position: Position,
+        direction: Direction,
+    ) -> Option<(Position, &T)> {
         let adjusted_position = position.add(direction.to_position())?;
 
         self.get_with_position(adjusted_position)
+            .map(|value| (adjusted_position, value))
     }
 }
 
